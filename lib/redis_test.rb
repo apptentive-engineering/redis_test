@@ -1,4 +1,5 @@
 require "redis_test/version"
+require "posix/spawn"
 
 module RedisTest
   class << self
@@ -74,10 +75,11 @@ module RedisTest
     end
 
     def stop
-      %x{
-        cat #{pidfile} | xargs kill -QUIT
-        rm -f #{cache_path}#{db_filename}
-      }
+      pid1 = POSIX::Spawn::spawn("cat #{pidfile} | xargs kill -QUIT")
+      Process::waitpid(pid1)
+
+      pid2 = POSIX::Spawn::spawn("rm -f #{cache_path}#{db_filename}")
+      Process::waitpid(pid2)
     end
 
     def server_url
