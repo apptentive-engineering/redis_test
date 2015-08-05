@@ -1,5 +1,4 @@
 require "redis_test/version"
-require "posix/spawn"
 
 module RedisTest
   class << self
