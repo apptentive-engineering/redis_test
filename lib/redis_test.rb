@@ -75,11 +75,9 @@ module RedisTest
     end
 
     def stop
-      pid1 = POSIX::Spawn::spawn("cat #{pidfile} | xargs kill -QUIT")
-      Process::waitpid(pid1)
-
-      pid2 = POSIX::Spawn::spawn("rm -f #{cache_path}#{db_filename}")
-      Process::waitpid(pid2)
+      pid = File.read(pidfile).to_i
+      Process.kill("QUIT", pid)
+      FileUtils.rm_f("#{cache_path}#{db_filename}")
     end
 
     def server_url
